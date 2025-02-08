@@ -38,7 +38,17 @@ environment {
             echo "Failed to build or push Docker image."
         }
     }
-}
 
+}
+     stage('K8S Deployment - PROD') {
+      steps {
+           withKubeConfig([credentialsId: 'kubeconfig']) {
+              sh "sed -i 's#replace#${imageName}#g' k8s_PROD-deployment_service.yaml"
+              sh "kubectl -n prod apply -f k8s_PROD-deployment_service.yaml"
+            }
+        
+      
+      }
+     }
   }
 }
