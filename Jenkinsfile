@@ -42,8 +42,7 @@ stage('snyk-dependency-check') {
           snykTokenId: 'snyk-creds',
           // place other parameters here
           failOnIssues: false
-          failOnError: false
-        )
+          failOnError: false )
       }
     }
 
