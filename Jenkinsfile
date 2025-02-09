@@ -41,8 +41,7 @@ stage('snyk-dependency-check') {
           snykInstallation: 'snyk-security',
           snykTokenId: 'snyk-creds',
           // place other parameters here
-          failOnIssues: false
-          failOnError: false )
+           )
       }
     }
 
