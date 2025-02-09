@@ -23,9 +23,7 @@ environment {
 
 stage('SonarQube Analysis') {
     
-    environment {
-        MVN_HOME = tool 'Default Maven'
-    }
+    
     steps {
         withSonarQubeEnv('MySonarQubeServer') {
             withCredentials([string(credentialsId: 'sonar-token', variable: 'Sonar_Token')]) {
