@@ -6,6 +6,7 @@ environment {
         DOCKER_IMAGE_NAME = 'shehabsaeed01/numeric-app'    // e.g., 'my-org/my-repo'
         DOCKER_IMAGE_TAG = "${env.GIT_COMMIT}"              // e.g., '1.0.0' or 'latest'
         DOCKER_CREDENTIALS_ID = 'docker-hub' // Jenkins credentials ID for Docker registry
+        SNYK_TOKEN = credentials('snyk-creds') // Store token in Jenkins Credentials
 }
   stages {
       stage('Build Artifact') {
@@ -32,6 +33,20 @@ stage('SonarQube Analysis') {
         }
     }
 }
+
+stage('snyk-dependency-check') {
+      steps {
+        
+        script {
+                    try {
+                        sh 'snyk auth $SNYK_TOKEN'
+                        sh 'snyk test --json > snyk-report.json'
+                    } catch (Exception e) {
+                        echo "Snyk scan failed, but continuing..."
+                    }
+                }
+      }
+    }
 
       stage('Build Docker Image') {
             steps {
