@@ -29,7 +29,7 @@ stage('SonarQube Analysis') {
     steps {
         withSonarQubeEnv('MySonarQubeServer') {
             withCredentials([string(credentialsId: 'sonar-token', variable: 'Sonar_Token')]) {
-                sh "${MVN_HOME}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=numeric-app -Dsonar.login=${Sonar_Token}"
+                sh "/usr/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=numeric-app -Dsonar.login=${Sonar_Token}"
             }
         }
     }
