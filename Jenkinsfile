@@ -36,15 +36,14 @@ stage('SonarQube Analysis') {
 
 stage('snyk-dependency-check') {
       steps {
-        
-        script {
-                    try {
-                        sh 'snyk auth $SNYK_TOKEN'
-                        sh 'snyk test --json > snyk-report.json'
-                    } catch (Exception e) {
-                        echo "Snyk scan failed, but continuing..."
-                    }
-                }
+        echo 'Testing...'
+        snykSecurity(
+          snykInstallation: 'snyk-security',
+          snykTokenId: 'snyk-creds',
+          // place other parameters here
+          failOnIssues: false
+          failOnError: false
+        )
       }
     }
 
