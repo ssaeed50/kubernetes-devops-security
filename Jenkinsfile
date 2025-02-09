@@ -22,12 +22,14 @@ environment {
         } 
 
 stage('SonarQube Analysis') {
+    
     def mvn = tool 'Default Maven';
-
+    steps{
     withCredentials([
         string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')
     ]) {
         sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=numeric-app -Dsonar.host.url=http://52.186.69.244:9000/ -Dsonar.login=${SONAR_TOKEN}"
+    }
     }
 }
 
