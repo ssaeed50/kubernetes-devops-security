@@ -20,16 +20,25 @@ environment {
               
             }
         } 
+
+stage('SonarQube Analysis') {
+    def mvn = tool 'Default Maven';
+
+    withCredentials([
+        string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')
+    ]) {
+        sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=numeric-app -Dsonar.host.url=http://52.186.69.244:9000/ -Dsonar.login=${SONAR_TOKEN}"
+    }
+}
+
       stage('Build Docker Image') {
             steps {
          withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
          sh 'printenv'
          sh 'sudo docker build -t  shehabsaeed01/numeric-app:""$GIT_COMMIT"" .'
            sh 'docker push shehabsaeed01/numeric-app:""$GIT_COMMIT""'
-
 }
             }
-
  post {
         success {
             echo "Docker image built and pushed successfully with tag: ${DOCKER_IMAGE_TAG}"
@@ -38,13 +47,14 @@ environment {
             echo "Failed to build or push Docker image."
         }
     }
-
 }
+
+
      stage('K8S Deployment - PROD') {
       steps {
            withKubeConfig([credentialsId: 'kubeconfig']) {
-              sh "sed -i 's#replace#shehabsaeed01/numeric-app:${GIT_COMMIT}#g' k8s_PROD-deployment_service.yaml"
-              sh "kubectl -n prod apply -f k8s_PROD-deployment_service.yaml"
+              sh "sed -i 's#replace#shehabsaeed01/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
+              sh "kubectl -n prod apply -f k8s_deployment_service.yaml"
             }
         
       
